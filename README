@@ -2,3 +2,23 @@
 Copyright 2008 Ken Collins, Decisiv Inc.
 Distributed via MIT license
 Feedback appreciated: kcollins at [nospam] decisiv dt net
+
+This class implements the strategy for deployment which uses a remote shared cache that is assumed to be 
+accessible by each target host. The remote cache is a SCM export created in one of the following two ways.
+
+  1) If :remote_repository_access is not set or is false, a local export is made, compressed
+     and copied to the target host and uncompressed to the remote shared cache.
+  2) If :remote_repository_access returns true, the target host will perform a direct SCM 
+     export to the remote shared cache.
+
+Despite which method is used above, the creation of the remote shared cache will only target the primary 
+app server using the primary_app_server() method. Again all other app targets assume that this is a 
+shared directory accessbile to all. This yeilds faster deployments since capistrano does not have to 
+locally prepare/compress/copy the source to each host.
+
+This development strategy inherets from the normal Copy deployment strategy and uses many of the same 
+metods/configurations available to that class when needing to perform local export and copy of the source.
+Examples include, :copy_compression, :copy_remote_dir, :copy_dir. Configurations specific to this strategy 
+includes, :shared_cache_dir (parent of all cached revisions) and :remote_repository_access (which determins 
+what method is used above to create the shared cache).
+
