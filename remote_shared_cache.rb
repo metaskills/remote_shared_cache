@@ -114,12 +114,10 @@ module Capistrano
           logger.debug "Compressing #{destination} to #{filename}"
           Dir.chdir(tmpdir) { system(compress(File.basename(destination), File.basename(filename)).join(" ")) }
           content = File.open(filename, "rb") { |f| f.read }
-          logger.debug "Uploading #{filename} to #{remote_filename}"
           put content, remote_filename
-          logger.debug "Uncompressing #{remote_filename} and moving to #{revision_cache_dir}"
           run "umask 02 && mkdir -p #{revision_cache_dir}"
           uncompress_and_move_command = "cd #{remote_dir} && #{decompress(remote_filename).join(" ")} && " + 
-            "mv #{remote_tmp_release_dir}/* #{revision_cache_dir} && " +
+            "cp -RPp #{remote_tmp_release_dir}/* #{revision_cache_dir} && " +
             "rm #{remote_filename} && rm -rf #{remote_tmp_release_dir}"
           run(uncompress_and_move_command)
         ensure
