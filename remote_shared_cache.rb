@@ -9,8 +9,10 @@ module Capistrano
     module Strategy
       
 
-      # This class implements the strategy for deployment which uses a remote shared cache that is assumed to be 
-      # accessible by each target host. The remote cache is a SCM export created in one of the following two ways.
+      # This class greatly speeds up deploy times to multiple hosts by only updating your latest source code to a 
+      # shared drive on a single host. If you have 5 app servers then the code update only happens with the primary 
+      # or first server while all others use the shared cache to copy from. The remote cache is a SCM export 
+      # created in one of the following two ways.
       # 
       #   1) If :remote_repository_access is not set or is false, a local export is made, compressed
       #      and copied to the target host and uncompressed to the remote shared cache.
